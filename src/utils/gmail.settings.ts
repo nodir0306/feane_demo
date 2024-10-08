@@ -1,5 +1,6 @@
 import nodemailer from "nodemailer";
 import { config } from "dotenv";
+import { InternalServerErrorException } from '@nestjs/common';
 
 config();
 
@@ -11,26 +12,22 @@ interface MailOptions {
   html?: string;
 }
 
-export const sendMailFunction = (mail_options: MailOptions): void => {
+export const sendMailFunction = async (mail_options: MailOptions): Promise<string> => {
   try {
     const transporter = nodemailer.createTransport({
-      host: process.env.MAIL_HOST,
-      port: Number(process.env.MAIL_PORT),
+      host: 'smtp.gmail.com',
+      port: 587,
       secure: false,
       auth: {
-        user: process.env.REPORTS_EMAIL,
-        pass: process.env.REPORTS_EMAIL_PASS,
+        user: 'reportsrealestate@gmail.com',
+        pass: 'wnmq bnip zrqg ucxf',
       },
     });
 
-    transporter.sendMail(mail_options, (error, info) => {
-      if (error) {
-        console.log(error);
-      } else {
-        console.log(info.response);
-      }
-    });
+    const info = await transporter.sendMail(mail_options);
+
+    return info.response;
   } catch (error) {
-    console.log(`Error sending message: ${error}`);
+    throw new InternalServerErrorException(`Error sending email: ${error.message}`);
   }
 };

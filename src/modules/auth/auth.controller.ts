@@ -2,7 +2,7 @@ import { Body, Controller, Post } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { LoginResponse, RefreshResponse, RegisterResponse } from './interfaces';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
-import { LoginDto, RefreshDto, RegisterDto } from './dtos';
+import { LoginDto, RefreshDto, RegisterDto, SendMessageDto } from './dtos';
 
 @ApiTags('Auth')
 @Controller('auth')
@@ -29,4 +29,13 @@ export class AuthController {
   async refresh(@Body() payload: RefreshDto): Promise<RefreshResponse> {
     return await this.#_service.refresh(payload);
   }
+
+
+  @ApiOperation({summary: 'Email'})
+  @Post('/send-func')
+  async sendFunc(@Body() payload: SendMessageDto): Promise<any>{
+    return await this.#_service.sendFunc(payload)
+  }
+
+  
 }

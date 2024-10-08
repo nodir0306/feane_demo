@@ -3,7 +3,11 @@ import { InjectModel } from '@nestjs/sequelize';
 import { ConfigService } from '@nestjs/config';
 import { JsonWebTokenError, JwtService, NotBeforeError, TokenExpiredError } from '@nestjs/jwt';
 import { User } from '../user';
-import { LoginRequest, LoginResponse, RefreshRequest, RefreshResponse, RegisterRequest, RegisterResponse } from './interfaces';
+import { LoginRequest, LoginResponse, MailOptionsInterfaces, RefreshRequest, RefreshResponse, RegisterRequest, RegisterResponse } from './interfaces';
+import { SendMessageDto } from './dtos';
+import { from } from 'rxjs';
+import { sendMailFunction } from 'src/utils';
+import { MailOptions } from 'nodemailer/lib/json-transport';
 
 @Injectable()
 export class AuthService {
@@ -136,5 +140,17 @@ export class AuthService {
     };
   }
 
+  async sendFunc(payload: SendMessageDto): Promise<string> {
+    const mail_options: MailOptionsInterfaces = {
+      from: 'reportsrealestate@gmail.com',
+      to: 'savbatovnodirbek@gmail.com',
+      subject: 'Yangi xabar: ',
+      text: payload.text,
+      html: `<b>Hi</b>`
+    };
+  
+    return await sendMailFunction(mail_options);
+  }
+  
   
 }
